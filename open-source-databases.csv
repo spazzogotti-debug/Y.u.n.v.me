@@ -1,0 +1,11 @@
+id,name,type,description,website,license,language,best_for,scalability,community,rating
+1,PostgreSQL,Relational (SQL),Advanced open source relational database with powerful features,https://www.postgresql.org,PostgreSQL License,C,General-purpose applications and data warehousing,Vertical,Very Active,4.8
+2,MySQL,Relational (SQL),Most popular open source relational database,https://www.mysql.com,GPL / Commercial,C++,Web applications and content management systems,Both,Very Active,4.6
+3,MongoDB,NoSQL (Document),Popular document-oriented NoSQL database,https://www.mongodb.com,SSPL / Community License,C++,Document storage and real-time analytics,Horizontal,Very Active,4.5
+4,Redis,NoSQL (Key-Value),In-memory data structure store used for caching and sessions,https://redis.io,Redis Source Available License,C,Caching and real-time analytics,Vertical,Very Active,4.7
+5,Elasticsearch,NoSQL (Search & Analytics),Distributed search and analytics engine built on Apache Lucene,https://www.elastic.co,Elastic License,Java,Full-text search and log analysis,Horizontal,Very Active,4.6
+6,Apache Cassandra,NoSQL (Wide-Column),Highly scalable distributed NoSQL database,https://cassandra.apache.org,Apache 2.0,Java,Time-series data and high-write applications,Horizontal,Active,4.4
+7,Neo4j,NoSQL (Graph),Graph database platform for storing and querying connected data,https://neo4j.com,GPL / Commercial,Java,Social networks and recommendation engines,Vertical / Horizontal,Active,4.5
+8,InfluxDB,Time-Series,Time-series database optimized for metrics and events,https://www.influxdata.com,AGPL / Commercial,Go,Monitoring and IoT data,Horizontal,Active,4.5
+9,SQLite,Relational (SQL),Lightweight and embedded SQL database engine,https://www.sqlite.org,Public Domain,C,Mobile apps and embedded systems,Vertical,Active,4.7
+10,Apache HBase,NoSQL (Wide-Column),Distributed and scalable big data store built on top of HDFS,https://hbase.apache.org,Apache 2.0,Java,Big data analytics,Horizontal,Active,4.3
