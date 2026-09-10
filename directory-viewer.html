@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Viewer - Streaming & Database Platforms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            border: none;
+            background: white;
+            color: #333;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"], select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .export-btn {
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            opacity: 0.9;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+        }
+
+        .website-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .website-link:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .badge.high {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge.medium {
+            background: #fff9c4;
+            color: #f57f17;
+        }
+
+        .badge.low {
+            background: #ffccbc;
+            color: #d84315;
+        }
+
+        .badge.very-high {
+            background: #a5d6a7;
+            color: #1b5e20;
+        }
+
+        .badge.freemium {
+            background: #bbdefb;
+            color: #01579b;
+        }
+
+        .badge.paid {
+            background: #f8bbd0;
+            color: #880e4f;
+        }
+
+        .badge.free {
+            background: #c8e6c9;
+            color: #1b5e20;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-size: 1.1em;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination button.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .stats {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            input[type="text"] {
+                min-width: 100%;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 Directory Viewer</h1>
+        <p>Explore Streaming Platforms & Open Source Databases</p>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('streaming')">🎥 Streaming Platforms</button>
+            <button class="tab-btn" onclick="switchTab('databases')">🗄️ Open Source Databases</button>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="Search..." onkeyup="filterTable()">
+            <select id="categoryFilter" onchange="filterTable()">
+                <option value="">All Categories</option>
+            </select>
+            <button class="export-btn" onclick="exportCSV()">📥 Export as CSV</button>
+            <button class="export-btn" onclick="exportJSON()">📥 Export as JSON</button>
+        </div>
+
+        <div class="table-container">
+            <table id="dataTable">
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <div id="noResults" class="no-results" style="display: none;">
+            No results found. Try adjusting your filters.
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+    <script>
+        let currentTab = 'streaming';
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let allData = [];
+        let filteredData = [];
+
+        const streamingData = [
+            { id: 1, name: 'Restream', category: 'Multistreaming', automation: 'High', pricing: 'Freemium', rating: 4.6, website: 'https://restream.io' },
+            { id: 2, name: 'StreamYard', category: 'Studio Platform', automation: 'Medium', pricing: 'Freemium', rating: 4.5, website: 'https://streamyard.com' },
+            { id: 3, name: 'OneStream Live', category: 'Multistreaming', automation: 'Very High', pricing: 'Paid', rating: 4.7, website: 'https://onestream.live' },
+            { id: 4, name: 'Castr', category: 'Multistreaming', automation: 'High', pricing: 'Freemium', rating: 4.4, website: 'https://castr.io' },
+            { id: 5, name: 'Streamlabs Ultra', category: 'Creator Platform', automation: 'High', pricing: 'Freemium', rating: 4.3, website: 'https://streamlabs.com' },
+            { id: 6, name: 'Switchboard Live', category: 'Enterprise', automation: 'Very High', pricing: 'Paid', rating: 4.6, website: 'https://switchboard.live' },
+            { id: 7, name: 'BoxCast', category: 'Vertical Solution', automation: 'High', pricing: 'Paid', rating: 4.5, website: 'https://boxcast.com' },
+            { id: 8, name: 'Melon', category: 'Creator Platform', automation: 'Medium', pricing: 'Free', rating: 4.2, website: 'https://melonapp.com' },
+            { id: 9, name: 'YouNow', category: 'Social Platform', automation: 'Low', pricing: 'Free', rating: 3.9, website: 'https://younow.com' },
+            { id: 10, name: 'Vimeo OTT', category: 'SaaS Platform', automation: 'Very High', pricing: 'Paid', rating: 4.5, website: 'https://ott.vimeo.com' }
+        ];
+
+        const databaseData = [
+            { id: 1, name: 'PostgreSQL', type: 'Relational (SQL)', license: 'PostgreSQL License', scalability: 'Vertical', rating: 4.8, website: 'https://www.postgresql.org' },
+            { id: 2, name: 'MySQL', type: 'Relational (SQL)', license: 'GPL / Commercial', scalability: 'Both', rating: 4.6, website: 'https://www.mysql.com' },
+            { id: 3, name: 'MongoDB', type: 'NoSQL (Document)', license: 'SSPL / Community', scalability: 'Horizontal', rating: 4.5, website: 'https://www.mongodb.com' },
+            { id: 4, name: 'Redis', type: 'NoSQL (Key-Value)', license: 'Redis License', scalability: 'Vertical', rating: 4.7, website: 'https://redis.io' },
+            { id: 5, name: 'Elasticsearch', type: 'NoSQL (Search)', license: 'Elastic License', scalability: 'Horizontal', rating: 4.6, website: 'https://www.elastic.co' },
+            { id: 6, name: 'Apache Cassandra', type: 'NoSQL (Wide-Column)', license: 'Apache 2.0', scalability: 'Horizontal', rating: 4.4, website: 'https://cassandra.apache.org' },
+            { id: 7, name: 'Neo4j', type: 'NoSQL (Graph)', license: 'GPL / Commercial', scalability: 'Vertical', rating: 4.5, website: 'https://neo4j.com' },
+            { id: 8, name: 'InfluxDB', type: 'Time-Series', license: 'AGPL / Commercial', scalability: 'Horizontal', rating: 4.5, website: 'https://www.influxdata.com' },
+            { id: 9, name: 'SQLite', type: 'Relational (SQL)', license: 'Public Domain', scalability: 'Vertical', rating: 4.7, website: 'https://www.sqlite.org' },
+            { id: 10, name: 'Apache HBase', type: 'NoSQL (Wide-Column)', license: 'Apache 2.0', scalability: 'Horizontal', rating: 4.3, website: 'https://hbase.apache.org' }
+        ];
+
+        function switchTab(tab) {
+            currentTab = tab;
+            currentPage = 1;
+            allData = tab === 'streaming' ? streamingData : databaseData;
+            filteredData = [...allData];
+            updateCategoryFilter();
+            renderTable();
+            updateStats();
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function updateCategoryFilter() {
+            const categories = [...new Set(allData.map(item => 
+                currentTab === 'streaming' ? item.category : item.type
+            ))];
+            const filter = document.getElementById('categoryFilter');
+            const selectedValue = filter.value;
+            filter.innerHTML = '<option value="">All Categories</option>';
+            categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat;
+                option.textContent = cat;
+                filter.appendChild(option);
+            });
+            filter.value = selectedValue;
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+
+            filteredData = allData.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(search) ||
+                    JSON.stringify(item).toLowerCase().includes(search);
+                const categoryField = currentTab === 'streaming' ? item.category : item.type;
+                const matchesCategory = !category || categoryField === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            currentPage = 1;
+            renderTable();
+        }
+
+        function renderTable() {
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredData.slice(start, end);
+
+            const thead = document.getElementById('tableHead');
+            const tbody = document.getElementById('tableBody');
+            const noResults = document.getElementById('noResults');
+
+            if (filteredData.length === 0) {
+                noResults.style.display = 'block';
+                thead.innerHTML = '';
+                tbody.innerHTML = '';
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            noResults.style.display = 'none';
+
+            if (currentTab === 'streaming') {
+                thead.innerHTML = `
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Automation</th>
+                        <th>Pricing</th>
+                        <th>Rating</th>
+                        <th>Link</th>
+                    </tr>
+                `;
+                tbody.innerHTML = pageData.map(item => `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.category}</td>
+                        <td><span class="badge ${item.automation.toLowerCase().replace(' ', '-')}">${item.automation}</span></td>
+                        <td><span class="badge ${item.pricing.toLowerCase()}">${item.pricing}</span></td>
+                        <td><span class="rating">${'⭐'.repeat(Math.round(item.rating))} ${item.rating}</span></td>
+                        <td><a href="${item.website}" target="_blank" class="website-link">Visit →</a></td>
+                    </tr>
+                `).join('');
+            } else {
+                thead.innerHTML = `
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>License</th>
+                        <th>Scalability</th>
+                        <th>Rating</th>
+                        <th>Link</th>
+                    </tr>
+                `;
+                tbody.innerHTML = pageData.map(item => `
+                    <tr>
+                        <td><strong>${item.name}</strong></td>
+                        <td>${item.type}</td>
+                        <td>${item.license}</td>
+                        <td>${item.scalability}</td>
+                        <td><span class="rating">${'⭐'.repeat(Math.round(item.rating))} ${item.rating}</span></td>
+                        <td><a href="${item.website}" target="_blank" class="website-link">Visit →</a></td>
+                    </tr>
+                `).join('');
+            }
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentPage ? 'active' : '';
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderTable();
+                    window.scrollTo(0, 0);
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        function updateStats() {
+            const stats = document.getElementById('stats');
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${filteredData.length}</div>
+                    <div class="stat-label">${currentTab === 'streaming' ? 'Platforms' : 'Databases'}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${Math.max(...filteredData.map(d => d.rating)).toFixed(1)}</div>
+                    <div class="stat-label">Avg Rating</div>
+                </div>
+            `;
+        }
+
+        function exportCSV() {
+            let csv = '';
+            const headers = currentTab === 'streaming' 
+                ? ['Name', 'Category', 'Automation', 'Pricing', 'Rating', 'Website']
+                : ['Name', 'Type', 'License', 'Scalability', 'Rating', 'Website'];
+            
+            csv += headers.join(',') + '\n';
+            filteredData.forEach(item => {
+                const row = currentTab === 'streaming'
+                    ? [item.name, item.category, item.automation, item.pricing, item.rating, item.website]
+                    : [item.name, item.type, item.license, item.scalability, item.rating, item.website];
+                csv += row.map(val => `"${val}"`).join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentTab}-data.csv`;
+            a.click();
+        }
+
+        function exportJSON() {
+            const json = JSON.stringify(filteredData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentTab}-data.json`;
+            a.click();
+        }
+
+        // Initialize
+        switchTab('streaming');
+    </script>
+</body>
+</html>
